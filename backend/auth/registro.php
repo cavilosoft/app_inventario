@@ -1,63 +1,69 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-require_once '../config/conexion.php';
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit(0);
+}
 
-    // Verificar que se recibieron los datos necesarios
-    if($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        echo json_encode([
-            "success" => false,
-            "message" => "Método no permitido. Use POST."
-        ]);
-        exit;
-    }
+require_once("../config/conexion.php");
 
-    // Obtener los datos del cuerpo de la solicitud
-    $nombre = trim($_POST['nombre'] ?? '');
-    $correo = trim($_POST['correo'] ?? '');           
-    $password = $_POST['password'] ?? '';
+// Se valida que la petición llegue por método POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode([
+        "success" => false,
+        "message" => "Método no permitido"
+    ]);
+    exit;
+}
 
-    // Validar que los campos no estén vacíos
-    if(empty($nombre) || empty($correo) || empty($password)) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Todos los campos son obligatorios."
-        ]);
-        exit;
-    }
+// Se reciben los datos enviados desde Flutter o Postman
+$nombre = trim($_POST['nombre'] ?? '');
+$correo = trim($_POST['correo'] ?? '');
+$password = trim($_POST['password'] ?? '');
 
-    // Verificar si el correo ya está registrado
-    $sqlVerificarCorreo = "SELECT id FROM usuarios WHERE correo = ?";
-    $stmt = $conexion->prepare($sqlVerificarCorreo);
-    $stmt->bind_param("s", $correo);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
+// Se valida que los campos obligatorios no estén vacíos
+if ($nombre === '' || $correo === '' || $password === '') {
+    echo json_encode([
+        "success" => false,
+        "message" => "Todos los campos son obligatorios"
+    ]);
+    exit;
+}
 
-    if($resultado->num_rows > 0) {
-        echo json_encode([
-            "success" => false,
-            "message" => "El correo ya está registrado."
-        ]);
-        exit;
-    }
+// Se verifica si el correo ya existe
+$sqlVerificar = "SELECT id FROM usuarios WHERE correo = ?";
+$stmtVerificar = $conexion->prepare($sqlVerificar);
+$stmtVerificar->bind_param("s", $correo);
+$stmtVerificar->execute();
+$resultadoVerificar = $stmtVerificar->get_result();
 
-    // Hashear la contraseña
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+if ($resultadoVerificar->num_rows > 0) {
+    echo json_encode([
+        "success" => false,
+        "message" => "El correo ya está registrado"
+    ]);
+    exit;
+}
 
-    // Insertar el nuevo usuario en la base de datos
-    $sqlInsertar = "INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)";
-    $stmt = $conexion->prepare($sqlInsertar);
-    $stmt->bind_param("sss", $nombre, $correo, $passwordHash);
-    
-    if($stmt->execute()) {
-        echo json_encode([
-            "success" => true,
-            "message" => "Usuario registrado exitosamente."
-        ]);
-    } else {
-        echo json_encode([
-            "success" => false,
-            "message" => "Error al registrar el usuario."
-        ]);
-    }
+// Se encripta la contraseña antes de guardarla
+$passwordEncriptado = password_hash($password, PASSWORD_DEFAULT);
 
+// Se inserta el nuevo usuario
+$sqlInsertar = "INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)";
+$stmtInsertar = $conexion->prepare($sqlInsertar);
+$stmtInsertar->bind_param("sss", $nombre, $correo, $passwordEncriptado);
+
+if ($stmtInsertar->execute()) {
+    echo json_encode([
+        "success" => true,
+        "message" => "Usuario registrado correctamente"
+    ]);
+} else {
+    echo json_encode([
+        "success" => false,
+        "message" => "No se pudo registrar el usuario"
+    ]);
+}
 ?>

@@ -1,0 +1,139 @@
+{
+  "info": {
+    "name": "App Inventario API",
+    "_postman_id": "f1c2a123-1234-4567-8901-123456789000",
+    "description": "Colección para probar la API del taller Flutter + PHP + MySQL",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "Registro de usuario",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "nombre", "value": "Carlos Silva", "type": "text" },
+                { "key": "correo", "value": "carlos@example.com", "type": "text" },
+                { "key": "password", "value": "123456", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost/backend/auth/registro.php",
+              "protocol": "http",
+              "host": ["localhost"],
+              "path": ["backend", "auth", "registro.php"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "correo", "value": "carlos@example.com", "type": "text" },
+                { "key": "password", "value": "123456", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost/backend/auth/login.php",
+              "protocol": "http",
+              "host": ["localhost"],
+              "path": ["backend", "auth", "login.php"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/backend/productos/listar.php",
+              "protocol": "http",
+              "host": ["localhost"],
+              "path": ["backend", "productos", "listar.php"]
+            }
+          }
+        },
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "nombre", "value": "Teclado", "type": "text" },
+                { "key": "descripcion", "value": "Teclado mecánico RGB", "type": "text" },
+                { "key": "precio", "value": "120000", "type": "text" },
+                { "key": "stock", "value": "10", "type": "text" },
+                { "key": "usuario_id", "value": "1", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost/backend/productos/crear.php",
+              "protocol": "http",
+              "host": ["localhost"],
+              "path": ["backend", "productos", "crear.php"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "id", "value": "1", "type": "text" },
+                { "key": "nombre", "value": "Teclado Gamer", "type": "text" },
+                { "key": "descripcion", "value": "Teclado mecánico RGB con luces", "type": "text" },
+                { "key": "precio", "value": "135000", "type": "text" },
+                { "key": "stock", "value": "8", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost/backend/productos/actualizar.php",
+              "protocol": "http",
+              "host": ["localhost"],
+              "path": ["backend", "productos", "actualizar.php"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "id", "value": "1", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost/backend/productos/eliminar.php",
+              "protocol": "http",
+              "host": ["localhost"],
+              "path": ["backend", "productos", "eliminar.php"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
